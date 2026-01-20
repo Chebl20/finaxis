@@ -152,6 +152,9 @@ async function startServer() {
               'http://127.0.0.1:5174',
               'http://127.0.0.1:5175',
               'http://127.0.0.1:5176',
+              // Custom domain provided by user
+              'http://finaxis.web',
+              'https://finaxis.web',
               // Coolify/Vite frontends calling this API domain
               'http://pwc8840044048gw80sowc88w.168.231.92.172.sslip.io',
               'https://pwc8840044048gw80sowc88w.168.231.92.172.sslip.io',
