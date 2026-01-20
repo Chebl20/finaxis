@@ -143,11 +143,35 @@ async function startServer() {
     await fastify.register(cors, {
       origin: IS_PRODUCTION 
         ? (origin, cb) => {
-            const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim());
-            if (!origin || allowedOrigins.includes(origin) || !IS_PRODUCTION) {
+            const defaultOrigins = [
+              'http://localhost:5173',
+              'http://localhost:5174',
+              'http://localhost:5175',
+              'http://localhost:5176',
+              'http://127.0.0.1:5173',
+              'http://127.0.0.1:5174',
+              'http://127.0.0.1:5175',
+              'http://127.0.0.1:5176',
+              // Coolify/Vite frontends calling this API domain
+              'http://pwc8840044048gw80sowc88w.168.231.92.172.sslip.io',
+              'https://pwc8840044048gw80sowc88w.168.231.92.172.sslip.io',
+            ];
+            const allowedOriginsEnv = (process.env.CORS_ORIGINS || '')
+              .split(',')
+              .map(o => o.trim())
+              .filter(Boolean);
+            const allowedOrigins = allowedOriginsEnv.length > 0 ? allowedOriginsEnv : defaultOrigins;
+
+            if (!origin) {
+              // Non-browser or same-origin requests
+              cb(null, true);
+              return;
+            }
+
+            if (allowedOrigins.includes(origin)) {
               cb(null, true);
             } else {
-              cb(new Error('Not allowed by CORS'), false);
+              cb(new Error(`Not allowed by CORS: ${origin}`), false);
             }
           }
         : true, // Allow all in development
