@@ -1,5 +1,4 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { z } from 'zod';
 import { createTransactionSchema } from '../utils/validation.js';
 import { 
   createTransaction, 

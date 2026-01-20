@@ -1,5 +1,4 @@
 import { FastifyInstance } from 'fastify';
-import { z } from 'zod';
 import { createCategorySchema } from '../utils/validation.js';
 import { 
   createCategory, 

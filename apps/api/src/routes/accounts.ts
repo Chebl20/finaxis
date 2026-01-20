@@ -1,5 +1,4 @@
 import { FastifyInstance } from 'fastify';
-import { z } from 'zod';
 import { createAccountSchema } from '../utils/validation.js';
 import { createAccount, getTenantAccounts, getAccountById, updateAccount, deleteAccount, Account } from '../modules/accounts.js';
 import { handleErrorResponse, NotFoundError } from '../utils/errors.js';
