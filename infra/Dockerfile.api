@@ -1,0 +1,29 @@
+# Build stage
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY apps/api apps/api
+COPY apps/web apps/web
+COPY packages packages
+COPY tsconfig.json .
+
+RUN npm install
+
+RUN npm run build -w @finaxis/api
+
+# Runtime stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY apps/api/package.json apps/api/
+COPY --from=builder /app/apps/api/dist apps/api/dist
+
+RUN npm install --production
+
+EXPOSE 3000
+
+CMD ["node", "apps/api/dist/index.js"]

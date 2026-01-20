@@ -1,0 +1,82 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+build
+apps/*/dist
+apps/*/build
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+.github
+.gitmodules
+
+# Husky
+.husky
+
+# Docker
+.dockerignore
+Dockerfile*
+docker-compose*
+
+# Testing
+coverage
+.nyc_output
+
+# Local development
+.cache
+.temp
+
+# Coolify specific
+.coolify
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+coverage
+
+# Local development
+apps/api/logs/*
+!apps/api/logs/.gitkeep
+
+# Coolify specific
+.coolify
+.cache
+.temp

@@ -1,0 +1,92 @@
+# Coolify Configuration for Finaxis
+# This file is used to configure the deployment of the Finaxis application on Coolify
+
+# Application name
+name: finaxis
+
+# Build configuration
+build:
+  # Build command for production
+  command: npm run build
+  # Directory where the build output is located
+  directory: .
+  # Node.js version to use
+  nodeVersion: 18
+
+# Start command for the application
+start: npm start
+
+# Ports to expose
+ports:
+  - 3000:3000  # API
+  - 5173:5173  # Frontend
+
+# Environment variables
+environment:
+  NODE_ENV: production
+  # Database configuration (should be set in Coolify dashboard)
+  DATABASE_URL: ${DATABASE_URL}
+  JWT_SECRET: ${JWT_SECRET}
+  # Other environment variables...
+
+# Health check configuration
+healthCheck:
+  path: /health
+  port: 3000
+
+# Resources (CPU and Memory)
+resources:
+  cpu: 0.5
+  memory: 512
+
+# Auto-deploy configuration
+autoDeploy:
+  enabled: true
+  branch: main
+
+# Persistent storage for logs and uploads
+volumes:
+  - /app/apps/api/logs
+  - /app/apps/api/uploads
+
+# Network configuration
+networks:
+  - default
+
+# Dependencies (if using Coolify's build system)
+dependencies:
+  - postgresql
+  - redis  # if using Redis for caching/sessions
+
+# Build arguments (if needed)
+# buildArgs:
+#   - NODE_ENV=production
+
+# After deploy script (runs after each deployment)
+afterDeploy:
+  - npm run db:migrate
+  - npm run db:seed
+
+# Custom domains (can be configured in Coolify dashboard)
+# domains:
+#   - api.yourdomain.com
+#   - app.yourdomain.com
+
+# SSL configuration (handled by Coolify)
+# ssl:
+#   enabled: true
+#   provider: letsencrypt
+
+# Database configuration (if using Coolify's database service)
+# database:
+#   type: postgresql
+#   version: 14
+#   name: finaxis_db
+#   username: finaxis_user
+#   password: ${DB_PASSWORD}
+
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  retention: 7  # Keep backups for 7 days

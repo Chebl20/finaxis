@@ -1,0 +1,96 @@
+version: '3.9'
+
+services:
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV:-production}
+    container_name: finaxis-api
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    # Using external database: remove dependency on local postgres
+    volumes:
+      - ./apps/api/logs:/app/apps/api/logs
+      - ./apps/api/uploads:/app/apps/api/uploads
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Service
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: finaxis-web
+    restart: unless-stopped
+    ports:
+      - '5173:80'
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:3000}
+    depends_on:
+      - api
+
+  # Database Service
+  postgres:
+    image: postgres:16-alpine
+    container_name: finaxis-db
+    restart: unless-stopped
+    profiles:
+      - local-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-finaxis}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./apps/api/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-finaxis}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Service (opcional, para cache/sessões)
+  # redis:
+  #   image: redis:alpine
+  #   container_name: finaxis-redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - '6379:6379'
+  #   volumes:
+  #     - redis_data:/data
+
+  # Nginx Reverse Proxy (opcional, para produção)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: finaxis-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - '80:80'
+  #     - '443:443'
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  #     - ./certs:/etc/letsencrypt
+  #   depends_on:
+  #     - api
+  #     - web
+
+volumes:
+  postgres_data:
+  # redis_data:

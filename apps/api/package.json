@@ -1,0 +1,36 @@
+{
+  "name": "@finaxis/api",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "migrate": "tsx src/database/migrate.ts",
+    "seed": "tsx src/database/seed.ts",
+    "reset": "tsx src/database/reset.ts",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.4.2",
+    "@fastify/jwt": "^7.2.4",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/rate-limit": "^7.0.0",
+    "@fastify/sensible": "^5.6.0",
+    "fastify": "^4.24.3",
+    "pg": "^8.11.2",
+    "postgres": "^3.4.0",
+    "zod": "^3.22.4",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "@types/bcryptjs": "^2.4.6",
+    "tsx": "^4.1.0",
+    "vitest": "^1.0.0"
+  }
+}
